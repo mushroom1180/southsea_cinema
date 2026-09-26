@@ -17,7 +17,7 @@ class _MovieListingState extends State<MovieListing> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(appTitle, style: cinemaHeaderStyle),
-        backgroundColor: cinemaSurface,
+        backgroundColor: cinemaBackground,
         iconTheme: const IconThemeData(color: cinemaBrand),
         elevation: 0,
       ),
@@ -27,30 +27,38 @@ class _MovieListingState extends State<MovieListing> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Interstellar',
               style: TextStyle(
+                color: cinemaFontWhite,
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
               ),
             ),
             SizedBox(height: 10),
-            Text(
+            const Text(
               'A team of explorers travel through a wormhole in space '
               'to find a new home for humanity.',
+              style: TextStyle(
+                color: cinemaFontMuted,
+                fontSize: 16,
+              ),
             ),
             SizedBox(height: 20),
             const Row(
               children: [
-                Text('Runtime: 169 mins'),
+                Text('Runtime: 169 mins',
+                    style: TextStyle(color: cinemaFontWhite)),
                 SizedBox(width: 30),
-                Text('Age Rating: 12A'),
+                Text('Age Rating: 12A',
+                    style: TextStyle(color: cinemaFontWhite)),
               ],
             ),
             const SizedBox(height: 30),
             const Text(
               'Ticket Quantity',
               style: TextStyle(
+                color: cinemaFontWhite,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -72,6 +80,23 @@ class _MovieListingState extends State<MovieListing> {
                 DropdownMenuEntry(value: 4, label: '4'),
                 DropdownMenuEntry(value: 5, label: '5'),
               ],
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: cinemaBrand,
+                foregroundColor: Colors.black,
+              ),
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      '$_ticketQuantity ticket(s) added to your order',
+                    ),
+                  ),
+                );
+              },
+              child: const Text('Add to Order'),
             ),
           ],
         ),
