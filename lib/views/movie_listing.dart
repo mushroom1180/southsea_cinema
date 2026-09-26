@@ -45,14 +45,39 @@ class _MovieListingState extends State<MovieListing> {
               ),
             ),
             SizedBox(height: 20),
-            const Row(
-              children: [
-                Text('Runtime: 169 mins',
-                    style: TextStyle(color: cinemaFontWhite)),
-                SizedBox(width: 30),
-                Text('Age Rating: 12A',
-                    style: TextStyle(color: cinemaFontWhite)),
-              ],
+            LayoutBuilder(
+              builder: (context, constraints) {
+                if (constraints.maxWidth > 600) {
+                  return const Row(
+                    children: [
+                      Text(
+                        'Runtime: 169 mins',
+                        style: TextStyle(color: cinemaFontWhite),
+                      ),
+                      SizedBox(width: 30),
+                      Text(
+                        'Age Rating: 12A',
+                        style: TextStyle(color: cinemaFontWhite),
+                      ),
+                    ],
+                  );
+                } else {
+                  return const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Runtime: 169 mins',
+                        style: TextStyle(color: cinemaFontWhite),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Age Rating: 12A',
+                        style: TextStyle(color: cinemaFontWhite),
+                      ),
+                    ],
+                  );
+                }
+              },
             ),
             const SizedBox(height: 30),
             const Text(
