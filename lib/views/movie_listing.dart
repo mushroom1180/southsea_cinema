@@ -32,6 +32,14 @@ class MovieListing extends StatelessWidget {
               'A team of explorers travel through a wormhole in space '
               'to find a new home for humanity.',
             ),
+            SizedBox(height: 20),
+            Row(
+              children: [
+                Text('Runtime: 169 mins'),
+                SizedBox(width: 30),
+                Text('Age Rating: 12A'),
+              ],
+            ),
           ],
         ),
       ),
