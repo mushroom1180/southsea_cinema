@@ -26,9 +26,7 @@ class _MovieListingState extends State<MovieListing> {
         ),
         elevation: 0,
       ),
-
       drawer: const NavDrawer(),
-
       body: LayoutBuilder(
         builder: (context, constraints) {
           final bool isWideScreen = constraints.maxWidth >= 600;
@@ -40,7 +38,6 @@ class _MovieListingState extends State<MovieListing> {
               padding: EdgeInsets.all(
                 isWideScreen ? 32 : 20,
               ),
-
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -119,9 +116,7 @@ class _MovieListingState extends State<MovieListing> {
                     Row(
                       children: [
                         _buildDropdown(),
-
                         const SizedBox(width: 20),
-
                         const Text(
                           'Adult (£7.50)',
                           style: TextStyle(
@@ -136,9 +131,7 @@ class _MovieListingState extends State<MovieListing> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildDropdown(),
-
                         const SizedBox(height: 15),
-
                         const Text(
                           'Adult (£7.50)',
                           style: TextStyle(
@@ -164,7 +157,6 @@ class _MovieListingState extends State<MovieListing> {
                         borderRadius: BorderRadius.zero,
                       ),
                     ),
-
                     onPressed: () {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -174,7 +166,6 @@ class _MovieListingState extends State<MovieListing> {
                         ),
                       );
                     },
-
                     child: const Text(
                       'ADD TO ORDER',
                       style: TextStyle(
@@ -194,21 +185,17 @@ class _MovieListingState extends State<MovieListing> {
   Widget _buildDropdown() {
     return SizedBox(
       width: 140,
-
       child: DropdownMenu<int>(
         initialSelection: 0,
-
         textStyle: const TextStyle(
           color: Colors.black,
           fontSize: 18,
         ),
-
         inputDecorationTheme: const InputDecorationTheme(
           filled: true,
           fillColor: Colors.white,
           border: OutlineInputBorder(),
         ),
-
         onSelected: (int? value) {
           if (value != null) {
             setState(() {
@@ -216,7 +203,6 @@ class _MovieListingState extends State<MovieListing> {
             });
           }
         },
-
         dropdownMenuEntries: const [
           DropdownMenuEntry(
             value: 0,
