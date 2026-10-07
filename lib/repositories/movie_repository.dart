@@ -18,7 +18,7 @@ class MovieRepository {
         title: 'THE CONJURING (2013)',
         ageRating: '15',
         synopsis:
-            'Pananormal investigotors Ed and Lorraine Warren help a family '
+            'Pananormal investigators Ed and Lorraine Warren help a family '
             'terrorized by a dark presence in their farmhouse.',
         screeningTime: 'Sunday 27 Sep 2026, 20:00',
         imagePath: 'assets/images/conjuring.jpeg',
