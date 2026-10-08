@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:southsea_cinema/constants.dart';
-import 'package:southsea_cinema/widgets/nav_drawer.dart';
+//import 'package:southsea_cinema/widgets/nav_drawer.dart';
+import 'package:southsea_cinema/models/movie.dart';
 
 class MovieListing extends StatefulWidget {
-  const MovieListing({super.key});
+  final Movie movie;
+
+  const MovieListing({
+    super.key,
+    required this.movie,
+  });
 
   @override
   State<MovieListing> createState() => _MovieListingState();
@@ -11,6 +17,7 @@ class MovieListing extends StatefulWidget {
 
 class _MovieListingState extends State<MovieListing> {
   int _ticketQuantity = 0;
+  String _orderMessage = '';
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +33,7 @@ class _MovieListingState extends State<MovieListing> {
         ),
         elevation: 0,
       ),
-      drawer: const NavDrawer(),
+
       body: LayoutBuilder(
         builder: (context, constraints) {
           final bool isWideScreen = constraints.maxWidth >= 600;
@@ -38,12 +45,13 @@ class _MovieListingState extends State<MovieListing> {
               padding: EdgeInsets.all(
                 isWideScreen ? 32 : 20,
               ),
+
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Movie title
+                  // Movie title and age rating
                   Text(
-                    'F1 THE MOVIE (2025) (12A)',
+                    '${widget.movie.title} (${widget.movie.ageRating})',
                     style: TextStyle(
                       color: cinemaFontWhite,
                       fontSize: isWideScreen ? 36 : 28,
@@ -67,15 +75,15 @@ class _MovieListingState extends State<MovieListing> {
                   const SizedBox(height: 30),
 
                   // Screening time
-                  const Text(
-                    'Saturday 26 Sep 2026, 18:00 - ends at 20:35',
-                    style: TextStyle(
+                  Text(
+                    widget.movie.screeningTime,
+                    style: const TextStyle(
                       color: cinemaFontWhite,
                       fontSize: 20,
                     ),
                   ),
 
-                  const SizedBox(height: 45),
+                  const SizedBox(height: 60),
 
                   // Information
                   const Text(
@@ -116,7 +124,9 @@ class _MovieListingState extends State<MovieListing> {
                     Row(
                       children: [
                         _buildDropdown(),
+
                         const SizedBox(width: 20),
+
                         const Text(
                           'Adult (£7.50)',
                           style: TextStyle(
@@ -131,7 +141,9 @@ class _MovieListingState extends State<MovieListing> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildDropdown(),
+
                         const SizedBox(height: 15),
+
                         const Text(
                           'Adult (£7.50)',
                           style: TextStyle(
@@ -157,20 +169,30 @@ class _MovieListingState extends State<MovieListing> {
                         borderRadius: BorderRadius.zero,
                       ),
                     ),
+
                     onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            '$_ticketQuantity ticket(s) added to your order',
-                          ),
-                        ),
-                      );
+                      setState(() {
+                        _orderMessage =
+                            '$_ticketQuantity ticket(s) added to your order';
+                      });
                     },
+
                     child: const Text(
                       'ADD TO ORDER',
                       style: TextStyle(
                         fontSize: 18,
                       ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // Order confirmation text
+                  Text(
+                    _orderMessage,
+                    style: const TextStyle(
+                      color: cinemaFontWhite,
+                      fontSize: 18,
                     ),
                   ),
                 ],
@@ -185,17 +207,21 @@ class _MovieListingState extends State<MovieListing> {
   Widget _buildDropdown() {
     return SizedBox(
       width: 140,
+
       child: DropdownMenu<int>(
         initialSelection: 0,
+
         textStyle: const TextStyle(
           color: Colors.black,
           fontSize: 18,
         ),
+
         inputDecorationTheme: const InputDecorationTheme(
           filled: true,
           fillColor: Colors.white,
           border: OutlineInputBorder(),
         ),
+
         onSelected: (int? value) {
           if (value != null) {
             setState(() {
@@ -203,6 +229,7 @@ class _MovieListingState extends State<MovieListing> {
             });
           }
         },
+
         dropdownMenuEntries: const [
           DropdownMenuEntry(
             value: 0,
