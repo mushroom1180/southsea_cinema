@@ -25,17 +25,17 @@ class HomeView extends StatelessWidget {
         ),
         elevation: 0,
       ),
-
       drawer: const NavDrawer(),
-
-      body: ListView.builder(
-        itemCount: movies.length,
-
-        itemBuilder: (context, index) {
-          return MovieCard(
-            movie: movies[index],
-          );
-        },
+      body: Container(
+        color: cinemaBackground,
+        child: ListView.builder(
+          itemCount: movies.length,
+          itemBuilder: (context, index) {
+            return MovieCard(
+              movie: movies[index],
+            );
+          },
+        ),
       ),
     );
   }
