@@ -127,8 +127,8 @@ class _MovieListingState extends State<MovieListing> {
 
                         const SizedBox(width: 20),
 
-                        const Text(
-                          'Adult (£7.50)',
+                        Text(
+                          'Adult (${widget.movie.formattedPrice})',
                           style: TextStyle(
                             color: cinemaFontWhite,
                             fontSize: 20,
@@ -144,8 +144,8 @@ class _MovieListingState extends State<MovieListing> {
 
                         const SizedBox(height: 15),
 
-                        const Text(
-                          'Adult (£7.50)',
+                        Text(
+                          'Adult (${widget.movie.formattedPrice})',
                           style: TextStyle(
                             color: cinemaFontWhite,
                             fontSize: 20,

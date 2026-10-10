@@ -12,6 +12,7 @@ class MovieRepository {
             'a struggling team while mentoring talented rookie Joshua Pierce.',
         screeningTime: 'Saturday 26 Sep 2026, 18:00',
         imagePath: 'assets/images/f1.jpg',
+        price: 7.50,
       ),
       Movie(
         id: 'the-conjuring',
@@ -22,6 +23,7 @@ class MovieRepository {
             'terrorized by a dark presence in their farmhouse.',
         screeningTime: 'Sunday 27 Sep 2026, 20:00',
         imagePath: 'assets/images/conjuring.jpeg',
+        price: 6.50,
       ),
     ];
   }
