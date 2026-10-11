@@ -9,22 +9,57 @@ class MovieRepository {
         ageRating: '12A',
         synopsis:
             'Racing veteran Sonny Hayes returns to Formula 1 to help save '
-            'a struggling team while mentoring talented rookie Joshua Pierce.',
+            'a struggling team while mentoring talented rookie Joshua Pearce.',
         screeningTime: 'Saturday 26 Sep 2026, 18:00',
         imagePath: 'assets/images/f1.jpg',
         price: 7.50,
       ),
+
       Movie(
         id: 'the-conjuring',
         title: 'THE CONJURING (2013)',
         ageRating: '15',
         synopsis:
-            'Pananormal investigators Ed and Lorraine Warren help a family '
+            'Paranormal investigators Ed and Lorraine Warren help a family '
             'terrorized by a dark presence in their farmhouse.',
         screeningTime: 'Sunday 27 Sep 2026, 20:00',
         imagePath: 'assets/images/conjuring.jpeg',
         price: 6.50,
       ),
     ];
+  }
+
+  Movie? getMovieById(String id) {
+    for (final movie in getMovies()) {
+      if (movie.id == id) {
+        return movie;
+      }
+    }
+
+    return null;
+  }
+
+  List<Movie> getMoviesByAgeRating(String rating) {
+    final List<Movie> matchingMovies = [];
+
+    for (final movie in getMovies()) {
+      if (movie.ageRating == rating) {
+        matchingMovies.add(movie);
+      }
+    }
+
+    return matchingMovies;
+  }
+
+  List<Movie> getMoviesUnderPrice(double maxPrice) {
+    final List<Movie> matchingMovies = [];
+
+    for (final movie in getMovies()) {
+      if (movie.price <= maxPrice) {
+        matchingMovies.add(movie);
+      }
+    }
+
+    return matchingMovies;
   }
 }
