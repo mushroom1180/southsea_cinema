@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:southsea_cinema/constants.dart';
-//import 'package:southsea_cinema/widgets/nav_drawer.dart';
+import 'package:southsea_cinema/widgets/nav_drawer.dart';
 import 'package:southsea_cinema/models/movie.dart';
+import 'package:southsea_cinema/widgets/primary_button.dart';
 
 class MovieListing extends StatefulWidget {
   final Movie movie;
@@ -23,16 +24,10 @@ class _MovieListingState extends State<MovieListing> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          appTitle,
-          style: cinemaHeaderStyle,
-        ),
-        backgroundColor: cinemaBackground,
-        iconTheme: const IconThemeData(
-          color: cinemaBrand,
-        ),
-        elevation: 0,
+        title: const Text(appTitle),
       ),
+
+      drawer: const NavDrawer(),
 
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -157,32 +152,14 @@ class _MovieListingState extends State<MovieListing> {
                   const SizedBox(height: 40),
 
                   // Add to order button
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: cinemaBrand,
-                      foregroundColor: cinemaFontWhite,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 25,
-                        vertical: 18,
-                      ),
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.zero,
-                      ),
-                    ),
-
+                  PrimaryButton(
+                    label: 'Add to order',
                     onPressed: () {
                       setState(() {
-                        _orderMessage =
+                        _orderMessage = 
                             '$_ticketQuantity ticket(s) added to your order';
                       });
                     },
-
-                    child: const Text(
-                      'ADD TO ORDER',
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
                   ),
 
                   const SizedBox(height: 20),

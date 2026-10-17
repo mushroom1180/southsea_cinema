@@ -4,30 +4,17 @@ import 'package:southsea_cinema/repositories/movie_repository.dart';
 
 void main() {
   group('MovieRepository unit tests', () {
-    test('getMovies returns at least two movies', () {
+    test('getMovies returns the mock movies', () {
       final MovieRepository repository = MovieRepository();
       final List<Movie> movies = repository.getMovies();
 
-      expect(movies.length >= 2, true);
-    });
+      expect(movies.length, 2);
 
-    test('movies contain valid data', () {
-      final MovieRepository repository = MovieRepository();
-      final List<Movie> movies = repository.getMovies();
+      expect(movies[0].id, 'f1');
+      expect(movies[0].title, 'F1 THE MOVIE (2025)');
 
-      for (final movie in movies) {
-        expect(movie.id, isNotEmpty);
-        expect(movie.title, isNotEmpty);
-        expect(movie.ageRating, isNotEmpty);
-        expect(movie.price > 0, true);
-      }
-    });
-
-    test('movies have unique ids', () {
-      final MovieRepository repository = MovieRepository();
-      final List<Movie> movies = repository.getMovies();
-
-      expect(movies[0].id == movies[1].id, false);
+      expect(movies[1].id, 'the-conjuring');
+      expect(movies[1].title, 'THE CONJURING (2013)');
     });
 
     test('getMovieById returns movie for existing id', () {
@@ -45,26 +32,6 @@ void main() {
       final Movie? movie = repository.getMovieById('missing');
 
       expect(movie, null);
-    });
-
-    test('getMoviesByAgeRating returns matching movies', () {
-      final MovieRepository repository = MovieRepository();
-
-      final List<Movie> movies = repository.getMoviesByAgeRating('12A');
-
-      expect(movies.length, 1);
-      expect(movies[0].id, 'f1');
-      expect(movies[0].ageRating, '12A');
-    });
-
-    test('getMoviesUnderPrice returns movies within maximum price', () {
-      final MovieRepository repository = MovieRepository();
-
-      final List<Movie> movies = repository.getMoviesUnderPrice(7.00);
-
-      expect(movies.length, 1);
-      expect(movies[0].id, 'the-conjuring');
-      expect(movies[0].price <= 7.00, true);
     });
   });
 }

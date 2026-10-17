@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:southsea_cinema/models/movie.dart';
 import 'package:southsea_cinema/constants.dart';
 import 'package:southsea_cinema/views/movie_listing.dart';
+import 'package:southsea_cinema/widgets/primary_button.dart';
 
 class MovieCard extends StatelessWidget {
   final Movie movie;
@@ -21,55 +22,113 @@ class MovieCard extends StatelessWidget {
 
         children: [
           // Movie title and age rating
-          Row(
-            children: [
-              Text(
-                movie.title,
-                style: const TextStyle(
-                  color: cinemaBrand,
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              if (constraints.maxWidth > 600) {
+                return Row(
+                  children: [
+                    Text(
+                      movie.title,
+                      style: const TextStyle(
+                        color: cinemaFontWhite,
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
 
-              const SizedBox(width: 10),
+                    const SizedBox(width: 20),
 
-              Text(
-                '(${movie.ageRating})',
-                style: const TextStyle(
-                  color: cinemaFontMuted,
-                  fontSize: 22,
-                ),
-              ),
-            ],
+                    Text(
+                      '(${movie.ageRating})',
+                      style: const TextStyle(
+                        color: cinemaFontWhite,
+                        fontSize: 22,
+                      ),
+                    ),
+                  ],
+                );
+              } else {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      movie.title,
+                      style: const TextStyle(
+                        color: cinemaFontWhite,
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    const SizedBox(height: 5),
+
+                    Text(
+                      '(${movie.ageRating})',
+                      style: const TextStyle(
+                        color: cinemaFontWhite,
+                        fontSize: 22,
+                      ),
+                    ),
+                  ],
+                );
+              }
+            },
           ),
 
           const SizedBox(height: 25),
 
           // Poster and synopsis
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Image.asset(
-                movie.imagePath,
-                width: 140,
-                height: 210,
-                fit: BoxFit.cover,
-              ),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              if (constraints.maxWidth > 600) {
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Image.asset(
+                      movie.imagePath,
+                      width: 140,
+                      height: 200,
+                      fit: BoxFit.cover,
+                    ),
 
-              const SizedBox(width: 20),
+                    const SizedBox(width: 20),
 
-              Expanded(
-                child: Text(
-                  movie.synopsis,
-                  style: const TextStyle(
-                    color: cinemaFontWhite,
-                    fontSize: 20,
-                    height: 1.5,
-                  ),
-                ),
-              ),
-            ],
+                    Expanded(
+                      child: Text(
+                        movie.synopsis,
+                        style: const TextStyle(
+                          color: cinemaFontWhite,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              } else {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Image.asset(
+                      movie.imagePath,
+                      width: 140,
+                      height: 200,
+                      fit: BoxFit.cover,
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    Text(
+                      movie.synopsis,
+                      style: const TextStyle(
+                        color: cinemaFontWhite,
+                        fontSize: 20,
+                        height: 1.5,
+                      ),
+                    ),
+                  ],
+                );
+              }
+            },
           ),
 
           const SizedBox(height: 30),
@@ -96,17 +155,8 @@ class MovieCard extends StatelessWidget {
                   ),
                 ),
               ),
-
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: cinemaBrand,
-                  foregroundColor: cinemaFontWhite,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 35,
-                    vertical: 18,
-                  ),
-                ),
-
+              PrimaryButton(
+                label: 'BOOK NOW',
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -119,13 +169,6 @@ class MovieCard extends StatelessWidget {
                     ),
                   );
                 },
-
-                child: const Text(
-                  'BOOK NOW',
-                  style: TextStyle(
-                    fontSize: 18,
-                  ),
-                ),
               ),
             ],
           ),
