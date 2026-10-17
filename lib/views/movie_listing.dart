@@ -3,6 +3,8 @@ import 'package:southsea_cinema/constants.dart';
 import 'package:southsea_cinema/widgets/nav_drawer.dart';
 import 'package:southsea_cinema/models/movie.dart';
 import 'package:southsea_cinema/widgets/primary_button.dart';
+import 'package:southsea_cinema/models/ticket_item.dart';
+import 'package:southsea_cinema/repositories/basket_repository.dart';
 
 class MovieListing extends StatefulWidget {
   final Movie movie;
@@ -20,15 +22,32 @@ class _MovieListingState extends State<MovieListing> {
   int _ticketQuantity = 0;
   String _orderMessage = '';
 
+  void _addToBasket() {
+    if (_ticketQuantity > 0) {
+      final TicketItem item = TicketItem(
+        movie: widget.movie,
+        quantity: _ticketQuantity,
+      );
+
+      BasketRepository.instance.addItem(item);
+
+      setState(() {
+        _orderMessage = 'Added $_ticketQuantity ticket(s) to basket';
+      });
+    } else {
+      setState(() {
+        _orderMessage = 'Please select at least 1 ticket';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(appTitle),
       ),
-
       drawer: const NavDrawer(),
-
       body: LayoutBuilder(
         builder: (context, constraints) {
           final bool isWideScreen = constraints.maxWidth >= 600;
@@ -40,7 +59,6 @@ class _MovieListingState extends State<MovieListing> {
               padding: EdgeInsets.all(
                 isWideScreen ? 32 : 20,
               ),
-
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -119,9 +137,7 @@ class _MovieListingState extends State<MovieListing> {
                     Row(
                       children: [
                         _buildDropdown(),
-
                         const SizedBox(width: 20),
-
                         Text(
                           'Adult (${widget.movie.formattedPrice})',
                           style: TextStyle(
@@ -136,9 +152,7 @@ class _MovieListingState extends State<MovieListing> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildDropdown(),
-
                         const SizedBox(height: 15),
-
                         Text(
                           'Adult (${widget.movie.formattedPrice})',
                           style: TextStyle(
@@ -154,12 +168,7 @@ class _MovieListingState extends State<MovieListing> {
                   // Add to order button
                   PrimaryButton(
                     label: 'Add to order',
-                    onPressed: () {
-                      setState(() {
-                        _orderMessage = 
-                            '$_ticketQuantity ticket(s) added to your order';
-                      });
-                    },
+                    onPressed: _addToBasket,
                   ),
 
                   const SizedBox(height: 20),
@@ -184,21 +193,17 @@ class _MovieListingState extends State<MovieListing> {
   Widget _buildDropdown() {
     return SizedBox(
       width: 140,
-
       child: DropdownMenu<int>(
         initialSelection: 0,
-
         textStyle: const TextStyle(
           color: Colors.black,
           fontSize: 18,
         ),
-
         inputDecorationTheme: const InputDecorationTheme(
           filled: true,
           fillColor: Colors.white,
           border: OutlineInputBorder(),
         ),
-
         onSelected: (int? value) {
           if (value != null) {
             setState(() {
@@ -206,7 +211,6 @@ class _MovieListingState extends State<MovieListing> {
             });
           }
         },
-
         dropdownMenuEntries: const [
           DropdownMenuEntry(
             value: 0,
