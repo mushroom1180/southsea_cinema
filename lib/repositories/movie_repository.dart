@@ -1,7 +1,18 @@
+import 'dart:convert';
+
+import 'package:flutter/services.dart';
 import 'package:southsea_cinema/models/movie.dart';
 
 class MovieRepository {
+  List<Movie>? _cachedMovies;
+
   List<Movie> getMovies() {
+    final List<Movie>? cachedMovies = _cachedMovies;
+
+    if (cachedMovies != null) {
+      return cachedMovies;
+    }
+
     return const [
       Movie(
         id: 'f1',
@@ -14,7 +25,6 @@ class MovieRepository {
         imagePath: 'assets/images/f1.jpg',
         price: 7.50,
       ),
-
       Movie(
         id: 'the-conjuring',
         title: 'THE CONJURING (2013)',
@@ -39,27 +49,24 @@ class MovieRepository {
     return null;
   }
 
-  List<Movie> getMoviesByAgeRating(String rating) {
-    final List<Movie> matchingMovies = [];
+  Future<List<Movie>> loadMoviesFromAsset({
+    String assetPath = 'assets/data/movies.json',
+  }) async {
+    final String jsonString = await rootBundle.loadString(assetPath);
+    final dynamic decodedData = jsonDecode(jsonString);
+    final List<dynamic> jsonList = decodedData as List<dynamic>;
+    final List<Movie> loadedMovies = [];
 
-    for (final movie in getMovies()) {
-      if (movie.ageRating == rating) {
-        matchingMovies.add(movie);
-      }
+    for (final dynamic item in jsonList) {
+      final Map<String, dynamic> itemMap =
+          item as Map<String, dynamic>;
+
+      final Movie movie = Movie.fromJson(itemMap);
+      loadedMovies.add(movie);
     }
 
-    return matchingMovies;
-  }
+    _cachedMovies = loadedMovies;
 
-  List<Movie> getMoviesUnderPrice(double maxPrice) {
-    final List<Movie> matchingMovies = [];
-
-    for (final movie in getMovies()) {
-      if (movie.price <= maxPrice) {
-        matchingMovies.add(movie);
-      }
-    }
-
-    return matchingMovies;
+    return loadedMovies;
   }
 }
