@@ -16,10 +16,8 @@ class MovieCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(24.0),
-
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-
         children: [
           // Movie title and age rating
           LayoutBuilder(
@@ -35,9 +33,7 @@ class MovieCard extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-
                     const SizedBox(width: 20),
-
                     Text(
                       '(${movie.ageRating})',
                       style: const TextStyle(
@@ -59,9 +55,7 @@ class MovieCard extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-
                     const SizedBox(height: 5),
-
                     Text(
                       '(${movie.ageRating})',
                       style: const TextStyle(
@@ -90,9 +84,7 @@ class MovieCard extends StatelessWidget {
                       height: 200,
                       fit: BoxFit.cover,
                     ),
-
                     const SizedBox(width: 20),
-
                     Expanded(
                       child: Text(
                         movie.synopsis,
@@ -114,9 +106,7 @@ class MovieCard extends StatelessWidget {
                       height: 200,
                       fit: BoxFit.cover,
                     ),
-
                     const SizedBox(height: 20),
-
                     Text(
                       movie.synopsis,
                       style: const TextStyle(

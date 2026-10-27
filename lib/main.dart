@@ -23,7 +23,6 @@ class SouthseaCinemaApp extends StatelessWidget {
           primary: cinemaBrand,
           surface: cinemaSurface,
         ),
-
         appBarTheme: const AppBarTheme(
           backgroundColor: cinemaSurface,
           iconTheme: IconThemeData(
@@ -33,7 +32,6 @@ class SouthseaCinemaApp extends StatelessWidget {
           elevation: 0,
         ),
       ),
-
       initialRoute: '/',
       routes: {
         '/': (context) {

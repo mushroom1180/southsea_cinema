@@ -204,7 +204,7 @@ class _BasketViewState extends State<BasketView> {
         items,
       );
     }
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(appTitle),

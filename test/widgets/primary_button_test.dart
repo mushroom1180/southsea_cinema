@@ -15,11 +15,11 @@ void main() {
       ),
     );
 
-    expect(find.text('BOOK NOW'), findsOneWidget);  
+    expect(find.text('BOOK NOW'), findsOneWidget);
   });
 
   testWidgets('PrimaryButton invokes onPressed when tapped',
-  (WidgetTester tester) async {
+      (WidgetTester tester) async {
     bool wasPressed = false;
 
     await tester.pumpWidget(
@@ -28,7 +28,7 @@ void main() {
           body: PrimaryButton(
             label: 'BOOK NOW',
             onPressed: () {
-              wasPressed =  true;
+              wasPressed = true;
             },
           ),
         ),
