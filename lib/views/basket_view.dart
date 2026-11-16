@@ -4,6 +4,8 @@ import 'package:southsea_cinema/widgets/nav_drawer.dart';
 import 'package:southsea_cinema/models/ticket_item.dart';
 import 'package:southsea_cinema/repositories/basket_repository.dart';
 import 'package:southsea_cinema/widgets/primary_button.dart';
+import 'package:southsea_cinema/database/cinema_db.dart';
+import 'package:southsea_cinema/models/booking.dart';
 
 class BasketView extends StatefulWidget {
   const BasketView({super.key});
@@ -16,6 +18,198 @@ class BasketView extends StatefulWidget {
 
 class _BasketViewState extends State<BasketView> {
   String _confirmationMessage = '';
+  List<Booking> _bookings = [];
+  bool _loadingBookings = true;
+  String _bookingErrorMessage = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBookings();
+  }
+
+  Future<void> _loadBookings() async {
+    try {
+      final List<Booking> bookings =
+          await CinemaDatabase.instance.getAllBookings();
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _bookings = bookings;
+        _loadingBookings = false;
+      });
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _bookingErrorMessage = 'Could not load bookings: $error';
+        _loadingBookings = false;
+      });
+    }
+  }
+
+  Widget _buildBookingCard(Booking booking) {
+    return Card(
+      margin: const EdgeInsets.symmetric(
+        horizontal: 16.0,
+        vertical: 8.0,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Booking #${booking.bookingNumber}',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  '£${booking.total.toStringAsFixed(2)}',
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(booking.summary),
+            const SizedBox(height: 4),
+            Text(
+              booking.date,
+              style: const TextStyle(
+                fontSize: 12,
+                color: Colors.black54,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBookingsSection() {
+    final Widget body;
+
+    if (_loadingBookings) {
+      body = const Center(
+        child: CircularProgressIndicator(),
+      );
+    } else if (_bookingErrorMessage.isNotEmpty) {
+      body = Center(
+        child: Text(_bookingErrorMessage),
+      );
+    } else if (_bookings.isEmpty) {
+      body = const Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 32.0),
+          child: Text(
+            'No bookings yet',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey,
+            ),
+          ),
+        ),
+      );
+    } else {
+      final List<Widget> bookingCards = [];
+
+      for (final Booking booking in _bookings) {
+        bookingCards.add(
+          _buildBookingCard(booking),
+        );
+      }
+
+      body = Column(
+        children: bookingCards,
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Past bookings',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 16),
+        body,
+      ],
+    );
+  }
+
+  String _buildSummary(List<TicketItem> items) {
+    final List<String> parts = [];
+
+    for (final TicketItem item in items) {
+      parts.add('${item.quantity} x ${item.movie.title}');
+    }
+
+    return parts.join(', ');
+  }
+
+  String _formatDate(DateTime now) {
+    final String day = now.day.toString().padLeft(2, '0');
+    final String month = now.month.toString().padLeft(2, '0');
+    final String hour = now.hour.toString().padLeft(2, '0');
+    final String minute = now.minute.toString().padLeft(2, '0');
+
+    return '$day/$month/${now.year} $hour:$minute';
+  }
+
+  Future<void> _checkout(
+    BasketRepository basket,
+    List<TicketItem> items,
+  ) async {
+    final String summary = _buildSummary(items);
+    final double total = basket.getTotal();
+    final String date = _formatDate(DateTime.now());
+
+    try {
+      final CinemaDatabase database = CinemaDatabase.instance;
+
+      final int bookingNumber = await database.getNextBookingNumber();
+
+      final Booking booking = Booking(
+        bookingNumber: bookingNumber,
+        summary: summary,
+        total: total,
+        date: date,
+      );
+
+      await database.insertBooking(booking);
+
+      basket.clear();
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _confirmationMessage = 'Booking $bookingNumber saved';
+      });
+
+      await _loadBookings();
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _confirmationMessage = 'Could not save your booking: $error';
+      });
+    }
+  }
 
   Widget _buildEmptyState() {
     return const Center(
@@ -158,15 +352,27 @@ class _BasketViewState extends State<BasketView> {
         child: PrimaryButton(
           label: 'BUY TICKETS',
           onPressed: () {
-            setState(() {
-              basket.clear();
-              _confirmationMessage = 'Thanks, your tickets have been booked';
-            });
+            _checkout(
+              basket,
+              items,
+            );
           },
         ),
       ),
     );
 
+    if (_confirmationMessage.isNotEmpty) {
+      children.add(const SizedBox(height: 12));
+
+      children.add(
+        Text(
+          _confirmationMessage,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      );
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: children,
@@ -212,7 +418,14 @@ class _BasketViewState extends State<BasketView> {
       drawer: const NavDrawer(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
-        child: content,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            content,
+            const SizedBox(height: 24),
+            _buildBookingsSection(),
+          ],
+        ),
       ),
     );
   }
