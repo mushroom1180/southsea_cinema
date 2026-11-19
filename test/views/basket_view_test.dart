@@ -18,6 +18,25 @@ const Movie testMovie = Movie(
   price: 6.00,
 );
 
+const Movie testMovie2 = Movie(
+  id: 'movie-2',
+  title: 'Test Movie 2',
+  ageRating: '15',
+  synopsis: 'Test synopsis 2',
+  screeningTime: '19:00',
+  imagePath: 'assets/images/test2.jpg',
+  price: 7.00,
+);
+
+const Movie testMovie3 = Movie(
+  id: 'movie-3',
+  title: 'Test Movie 3',
+  ageRating: 'PG',
+  synopsis: 'Test synopsis 3',
+  screeningTime: '20:00',
+  imagePath: 'assets/images/test3.jpg',
+  price: 8.00,
+);
 void main() {
   setUp(() async {
     BasketRepository.instance.clear();
@@ -304,6 +323,78 @@ void main() {
 
       expect(
         find.text('No bookings yet'),
+        findsOneWidget,
+      );
+    },
+  );
+
+  testWidgets(
+    'BasketView removes the middle film using a key',
+    (WidgetTester tester) async {
+      BasketRepository.instance.addItem(
+        const TicketItem(
+          movie: testMovie,
+          quantity: 1,
+        ),
+      );
+
+      BasketRepository.instance.addItem(
+        const TicketItem(
+          movie: testMovie2,
+          quantity: 1,
+        ),
+      );
+
+      BasketRepository.instance.addItem(
+        const TicketItem(
+          movie: testMovie3,
+          quantity: 1,
+        ),
+      );
+
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: BasketView(),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('1 x Test Movie'),
+        findsOneWidget,
+      );
+
+      expect(
+        find.text('1 x Test Movie 2'),
+        findsOneWidget,
+      );
+
+      expect(
+        find.text('1 x Test Movie 3'),
+        findsOneWidget,
+      );
+
+      await tester.tap(
+        find.byKey(
+          const Key('delete_1'),
+        ),
+      );
+
+      await tester.pump();
+
+      expect(
+        find.text('1 x Test Movie'),
+        findsOneWidget,
+      );
+
+      expect(
+        find.text('1 x Test Movie 2'),
+        findsNothing,
+      );
+
+      expect(
+        find.text('1 x Test Movie 3'),
         findsOneWidget,
       );
     },

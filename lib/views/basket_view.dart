@@ -71,15 +71,24 @@ class _BasketViewState extends State<BasketView> {
                   'Booking #${booking.bookingNumber}',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
+                    color: cinemaBackground,
                   ),
                 ),
                 Text(
                   '£${booking.total.toStringAsFixed(2)}',
+                  style: const TextStyle(
+                    color: cinemaBackground,
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 4),
-            Text(booking.summary),
+            Text(
+              booking.summary,
+              style: const TextStyle(
+                color: cinemaBackground,
+              ),
+            ),
             const SizedBox(height: 4),
             Text(
               booking.date,
@@ -253,6 +262,7 @@ class _BasketViewState extends State<BasketView> {
             ),
           ),
           IconButton(
+            key: Key('delete_$index'),
             icon: const Icon(
               Icons.delete_outline,
               color: Colors.red,
