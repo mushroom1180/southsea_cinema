@@ -9,9 +9,17 @@ const String prefName = 'user_name';
 const String prefAddress = 'user_address';
 const String prefEmail = 'user_email';
 const String prefNewsletter = 'user_newsletter';
+const String prefThemeMode = 'theme_mode';
 
 class SettingsView extends StatefulWidget {
-  const SettingsView({super.key});
+  final ThemeMode themeMode;
+  final ValueChanged<ThemeMode>? onThemeModeChanged;
+
+  const SettingsView({
+    super.key,
+    this.themeMode = ThemeMode.dark,
+    this.onThemeModeChanged,
+  });
 
   @override
   State<SettingsView> createState() {
@@ -25,6 +33,7 @@ class _SettingsViewState extends State<SettingsView> {
   late TextEditingController _emailController;
 
   bool _receiveNewsletter = false;
+  late ThemeMode _selectedThemeMode;
   String _confirmationMessage = '';
 
   Future<void> _loadSettings() async {
@@ -34,6 +43,7 @@ class _SettingsViewState extends State<SettingsView> {
     final String? savedAddress = await prefs.getString(prefAddress);
     final String? savedEmail = await prefs.getString(prefEmail);
     final bool? savedNewsletter = await prefs.getBool(prefNewsletter);
+    final String? savedThemeMode = await prefs.getString(prefThemeMode);
 
     String name = '';
     if (savedName != null) {
@@ -64,6 +74,11 @@ class _SettingsViewState extends State<SettingsView> {
       _addressController.text = address;
       _emailController.text = email;
       _receiveNewsletter = newsletter;
+
+      if (widget.onThemeModeChanged == null) {
+        _selectedThemeMode =
+            savedThemeMode == 'light' ? ThemeMode.light : ThemeMode.dark;
+      }
     });
   }
 
@@ -74,8 +89,19 @@ class _SettingsViewState extends State<SettingsView> {
     _nameController = TextEditingController();
     _addressController = TextEditingController();
     _emailController = TextEditingController();
+    _selectedThemeMode = widget.themeMode;
 
     _loadSettings();
+  }
+
+  @override
+  void didUpdateWidget(SettingsView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.onThemeModeChanged != null &&
+        oldWidget.themeMode != widget.themeMode) {
+      _selectedThemeMode = widget.themeMode;
+    }
   }
 
   @override
@@ -101,6 +127,10 @@ class _SettingsViewState extends State<SettingsView> {
       prefNewsletter,
       _receiveNewsletter,
     );
+    await prefs.setString(
+      prefThemeMode,
+      _selectedThemeMode == ThemeMode.light ? 'light' : 'dark',
+    );
 
     final UserSettings settings = UserSettings(
       name: name,
@@ -116,6 +146,7 @@ class _SettingsViewState extends State<SettingsView> {
     setState(() {
       _confirmationMessage = 'Settings saved for ${settings.name}';
     });
+    widget.onThemeModeChanged?.call(_selectedThemeMode);
   }
 
   @override
@@ -177,6 +208,23 @@ class _SettingsViewState extends State<SettingsView> {
                   onChanged: (bool value) {
                     setState(() {
                       _receiveNewsletter = value;
+                    });
+                  },
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                const Expanded(
+                  child: Text('Light mode'),
+                ),
+                Switch(
+                  key: const Key('theme_mode_switch'),
+                  value: _selectedThemeMode == ThemeMode.light,
+                  onChanged: (bool value) {
+                    setState(() {
+                      _selectedThemeMode =
+                          value ? ThemeMode.light : ThemeMode.dark;
                     });
                   },
                 ),

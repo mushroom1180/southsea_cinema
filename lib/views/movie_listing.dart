@@ -163,6 +163,22 @@ class _MovieListingState extends State<MovieListing> {
                       ],
                     ),
 
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Current ticket subtotal for ${widget.movie.title}:',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Text(
+                        '£${(widget.movie.price * _ticketQuantity).toStringAsFixed(2)}',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+
                   const SizedBox(height: 40),
 
                   // Add to order button

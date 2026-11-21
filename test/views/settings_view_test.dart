@@ -34,13 +34,51 @@ void main() {
 
       expect(
         find.byType(Switch),
-        findsOneWidget,
+        findsNWidgets(2),
       );
 
       expect(
         find.text('Save Settings'),
         findsOneWidget,
       );
+    },
+  );
+
+  testWidgets(
+    'Theme choice is saved and applied only when settings are saved',
+    (WidgetTester tester) async {
+      ThemeMode? appliedThemeMode;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: SettingsView(
+            themeMode: ThemeMode.dark,
+            onThemeModeChanged: (ThemeMode themeMode) {
+              appliedThemeMode = themeMode;
+            },
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      final Finder themeSwitch = find.byKey(const Key('theme_mode_switch'));
+      final SharedPreferencesAsync prefs = SharedPreferencesAsync();
+
+      expect(tester.widget<Switch>(themeSwitch).value, isFalse);
+
+      await tester.tap(themeSwitch);
+      await tester.pump();
+
+      expect(tester.widget<Switch>(themeSwitch).value, isTrue);
+      expect(appliedThemeMode, isNull);
+      expect(await prefs.getString(prefThemeMode), isNull);
+
+      await tester.tap(find.text('Save Settings'));
+      await tester.pumpAndSettle();
+
+      expect(await prefs.getString(prefThemeMode), 'light');
+      expect(appliedThemeMode, ThemeMode.light);
     },
   );
 
@@ -85,7 +123,7 @@ void main() {
         'gerald.vernon-jackson@portsmouthcc.gov.uk',
       );
 
-      final Finder switchFinder = find.byType(Switch);
+      final Finder switchFinder = find.byType(Switch).first;
 
       expect(
         tester.widget<Switch>(switchFinder).value,
@@ -160,7 +198,8 @@ void main() {
         findsOneWidget,
       );
 
-      final Switch reopenedSwitch = tester.widget<Switch>(find.byType(Switch));
+      final Switch reopenedSwitch =
+          tester.widget<Switch>(find.byType(Switch).first);
 
       expect(
         reopenedSwitch.value,
@@ -179,6 +218,7 @@ void main() {
           prefAddress: 'Portsmouth Guildhall, PO1 2AJ',
           prefEmail: 'abdul.kadir@portsmouthcc.gov.uk',
           prefNewsletter: true,
+          prefThemeMode: 'light',
         },
       );
 
@@ -205,10 +245,20 @@ void main() {
         findsOneWidget,
       );
 
-      final Switch switchWidget = tester.widget<Switch>(find.byType(Switch));
+      final Switch switchWidget =
+          tester.widget<Switch>(find.byType(Switch).first);
 
       expect(
         switchWidget.value,
+        isTrue,
+      );
+
+      final Switch themeSwitch = tester.widget<Switch>(
+        find.byKey(const Key('theme_mode_switch')),
+      );
+
+      expect(
+        themeSwitch.value,
         isTrue,
       );
     },
